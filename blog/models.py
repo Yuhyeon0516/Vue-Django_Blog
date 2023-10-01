@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 
 # Create your models here.
@@ -11,7 +12,7 @@ class Post(models.Model):
     content = models.TextField("CONTENT")
     create_dt = models.DateTimeField("CREATE DATE", auto_now_add=True)
     modify_dt = models.DateTimeField("MODIFY DATE", auto_now=True)
-    # tags = TaggableManager(blank=True)
+    tags = TaggableManager(blank=True)
     # owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name='OWNER', blank=True, null=True)
 
     def __str__(self):
