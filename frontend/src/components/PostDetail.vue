@@ -2,30 +2,20 @@
     <v-container fluid>
         <v-row align="center" justify="center">
             <v-col cols="12" lg="10">
-                <h1>Post title here</h1>
-                <p>2023-10-04, written by yhkim</p>
+                <h1>{{ post.title }}</h1>
+                <p>{{ post.modify_dt }}, written by {{ post.owner }}</p>
             </v-col>
         </v-row>
 
         <v-row align="start" justify="center">
             <v-col cols="12" sm="8" lg="7">
                 <v-card class="pa-2" outlined tile>
-                    <p>
-                        I study Vue.js and Django
-                        <br />
-                        <br />
-                        <br />
-                        <br />
-                        <br />
-                        <br />
-                        <br />
-                        <br />
-                        And more Vuetify.
+                    <p style="white-space: pre-wrap">
+                        {{ post.content }}
                     </p>
                     <div>
                         <strong>TAGS:</strong>
-                        <v-chip class="ma-2" outlined> Python </v-chip>
-                        <v-chip class="ma-2" outlined> Django </v-chip>
+                        <v-chip class="ma-2" outlined v-for="(tag, index) in post.tags" :key="index"> {{ tag }} </v-chip>
                     </div>
                 </v-card>
             </v-col>
