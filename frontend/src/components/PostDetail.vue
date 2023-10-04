@@ -58,9 +58,32 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'HelloWorld',
 
-    data: () => ({}),
+    data: () => ({
+        post: {},
+    }),
+    created() {
+        console.log('created');
+        this.fetchPostDetail();
+    },
+    methods: {
+        fetchPostDetail() {
+            console.log('fetchPostDetail');
+            axios
+                .get('/api/post/2/')
+                .then((res) => {
+                    console.log('Post detail get res', res);
+                    this.post = res.data;
+                })
+                .catch((err) => {
+                    console.log('error', err.response);
+                    alert(err.response.status + ' ' + err.response.statusText);
+                });
+        },
+    },
 };
 </script>
