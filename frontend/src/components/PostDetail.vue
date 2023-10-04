@@ -23,12 +23,12 @@
             <v-col cols="12" sm="4" lg="3">
                 <v-card class="pa-2 mb-5" tile>
                     <p>prev post</p>
-                    <h2 @click="fetchPostDetail(post.prev.id)">{{ post.prev.title }}</h2>
+                    <h2 v-if="post.prev" @click="fetchPostDetail(post.prev.id)" class="my-hover">{{ post.prev.title }}</h2>
                 </v-card>
 
                 <v-card class="pa-2 mb-5" tile>
                     <p>next post</p>
-                    <h2 @click="fetchPostDetail(post.next.id)">{{ post.next.title }}</h2>
+                    <h2 v-if="post.next" @click="fetchPostDetail(post.next.id)" class="my-hover">{{ post.next.title }}</h2>
                 </v-card>
 
                 <v-card class="pa-2" tile>
@@ -51,8 +51,6 @@
 import axios from 'axios';
 
 export default {
-    name: 'HelloWorld',
-
     data: () => ({
         post: {},
     }),
@@ -78,3 +76,10 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.my-hover:hover {
+    cursor: pointer;
+    font-style: italic;
+}
+</style>
