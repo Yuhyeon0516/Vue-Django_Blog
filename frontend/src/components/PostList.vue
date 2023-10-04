@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     data: () => ({
         dialog: false,
@@ -66,20 +68,16 @@ export default {
             { text: '작성자', value: 'owner' },
             { text: 'Actions', value: 'actions', sortable: false },
         ],
-        posts: [
-            {
-                title: 'title1',
-                description: 'title1',
-                modify_dt: '2023-10-04',
-                owner: 'user1',
-            },
-        ],
+        posts: [],
         tagname: '',
         editedIndex: -1,
         editedItem: {},
         actionKind: '',
         me: { username: 'Anonymous' },
     }),
+    created() {
+        this.fetchPostList();
+    },
     computed: {
         formTitle() {
             // return this.editedIndex === -1 ? "Create Item" : "Update Item";
@@ -88,9 +86,24 @@ export default {
         },
     },
     methods: {
+        fetchPostList() {
+            console.log('fetchPostList');
+            axios
+                .get('/api/post/list/')
+                .then((res) => {
+                    console.log('Post get res', res);
+                    this.posts = res.data;
+                })
+                .catch((err) => {
+                    console.log('error', err);
+                    alert(err.response.status + ' ' + err.response.statusText);
+                });
+        },
+
         serverPage(item) {
             console.log(item);
         },
+
         dialogOpen(actionKind, item) {
             console.log('dialogOpen()...', actionKind, item);
             // if (this.me.username === 'Anonymous') {
@@ -120,8 +133,6 @@ export default {
             else this.updatePost();
             this.dialog = false;
         },
-
-        fetchPostList() {},
 
         deletePost(item) {
             console.log(item);
