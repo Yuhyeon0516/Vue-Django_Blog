@@ -106,7 +106,8 @@ export default {
         },
 
         serverPage(item) {
-            console.log(item);
+            console.log('serverPage', item);
+            location.href = `/blog/post/${item.id}/`;
         },
 
         dialogOpen(actionKind, item) {
@@ -149,3 +150,9 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.v-data-table >>> tbody > tr {
+    cursor: pointer;
+}
+</style>
