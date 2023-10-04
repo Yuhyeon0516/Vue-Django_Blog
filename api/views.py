@@ -1,8 +1,9 @@
+from django.db.models import Count
 from django.http import JsonResponse
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
-from api.views_util import obj_to_post, prev_next_post
 from taggit.models import Tag
+from api.views_util import make_tag_cloud, obj_to_post, prev_next_post
 
 from blog.models import Post
 
@@ -30,18 +31,10 @@ class ApiPostDV(BaseDetailView):
 
 
 class ApiTagCloudLV(BaseListView):
-    model = Tag
+    queryset = Tag.objects.annotate(cnt=Count("post"))
 
     def render_to_response(self, context, **response_kwargs):
-        querySet = context["object_list"]
-        tagList = []
-        for obj in querySet:
-            tagList.append(
-                {
-                    "name": obj.name,
-                    # "count": obj.count,
-                    # "weight": obj.name,
-                }
-            )
+        qs = context["object_list"]
+        tagList = make_tag_cloud(qs)
 
         return JsonResponse(data=tagList, safe=False, status=200)
