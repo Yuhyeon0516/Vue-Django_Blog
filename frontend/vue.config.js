@@ -5,6 +5,7 @@ const path = require('path');
 module.exports = defineConfig({
     transpileDependencies: ['vuetify'],
     devServer: {
+        proxy: 'http://127.0.0.1:8000',
         static: {
             directory: path.join(__dirname, 'dist'),
             staticOptions: {
