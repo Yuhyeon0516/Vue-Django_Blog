@@ -31,7 +31,7 @@ class ApiPostDV(BaseDetailView):
 
 
 class ApiTagCloudLV(BaseListView):
-    queryset = Tag.objects.annotate(cnt=Count("post"))
+    queryset = Tag.objects.annotate(count=Count("post"))
 
     def render_to_response(self, context, **response_kwargs):
         qs = context["object_list"]
