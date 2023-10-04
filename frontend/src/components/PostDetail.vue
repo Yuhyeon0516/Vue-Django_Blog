@@ -75,7 +75,7 @@ export default {
         fetchTagCloud() {
             console.log('fetchTagCloud');
             axios
-                .get()
+                .get('/api/tag/cloud/')
                 .then((res) => {
                     console.log('Post tagcloud res', res);
                     this.tagCloud = res.data;
