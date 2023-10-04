@@ -23,12 +23,12 @@
             <v-col cols="12" sm="4" lg="3">
                 <v-card class="pa-2 mb-5" tile>
                     <p>prev post</p>
-                    <h2>Previous title here</h2>
+                    <h2 @click="fetchPostDetail(post.prev.id)">{{ post.prev.title }}</h2>
                 </v-card>
 
                 <v-card class="pa-2 mb-5" tile>
                     <p>next post</p>
-                    <h2>Next title here</h2>
+                    <h2 @click="fetchPostDetail(post.next.id)">{{ post.next.title }}</h2>
                 </v-card>
 
                 <v-card class="pa-2" tile>
@@ -58,13 +58,14 @@ export default {
     }),
     created() {
         console.log('created');
-        this.fetchPostDetail();
+        const postId = 2;
+        this.fetchPostDetail(postId);
     },
     methods: {
-        fetchPostDetail() {
+        fetchPostDetail(postId) {
             console.log('fetchPostDetail');
             axios
-                .get('/api/post/2/')
+                .get(`/api/post/${postId}/`)
                 .then((res) => {
                     console.log('Post detail get res', res);
                     this.post = res.data;
