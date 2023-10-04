@@ -1,6 +1,4 @@
-from typing import Any
 from django.db.models import Count
-from django.db.models.query import QuerySet
 from django.http import JsonResponse
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
@@ -13,7 +11,7 @@ from blog.models import Post
 # Create your views here.
 class ApiPostLV(BaseListView):
     def get_queryset(self):
-        tagname = self.request.GET.get("tagname").split("/")[0]
+        tagname = self.request.GET.get("tagname")
 
         if tagname:
             qs = Post.objects.filter(tags__name=tagname)

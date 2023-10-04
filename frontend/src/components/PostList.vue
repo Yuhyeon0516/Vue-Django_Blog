@@ -13,7 +13,6 @@
                 </v-toolbar>
             </template>
             <template v-slot:[`item.actions`]="{ item }">
-                <!-- <template v-slot:item.actions="{ item }"> -->
                 <v-icon small class="mr-2" @click.stop="dialogOpen('update', item)">mdi-pencil</v-icon>
                 <v-icon small @click.stop="deletePost(item)">mdi-delete</v-icon>
             </template>
@@ -77,22 +76,21 @@ export default {
     }),
     created() {
         const params = new URL(location).searchParams;
-        const paramTag = params.get('tagname');
-        this.fetchPostList(paramTag);
+        this.tagname = params.get('tagname');
+        this.fetchPostList(this.tagname);
     },
     computed: {
         formTitle() {
-            // return this.editedIndex === -1 ? "Create Item" : "Update Item";
             if (this.actionKind === 'create') return 'Create Item';
             else return 'Update Item';
         },
     },
     methods: {
-        fetchPostList(paramTag) {
-            console.log('fetchPostList', paramTag);
+        fetchPostList() {
+            console.log('fetchPostList', this.tagname);
             let getUrl = '';
 
-            if (paramTag) getUrl = `/api/post/list/?tagname=${paramTag}/`;
+            if (this.tagname) getUrl = `/api/post/list/?tagname=${this.tagname}`;
             else getUrl = '/api/post/list/';
 
             axios
