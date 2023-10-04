@@ -76,7 +76,9 @@ export default {
         me: { username: 'Anonymous' },
     }),
     created() {
-        this.fetchPostList();
+        const params = new URL(location).searchParams;
+        const paramTag = params.get('tagname');
+        this.fetchPostList(paramTag);
     },
     computed: {
         formTitle() {
@@ -86,12 +88,17 @@ export default {
         },
     },
     methods: {
-        fetchPostList() {
-            console.log('fetchPostList');
+        fetchPostList(paramTag) {
+            console.log('fetchPostList', paramTag);
+            let getUrl = '';
+
+            if (paramTag) getUrl = `/api/post/list/?tagname=${paramTag}/`;
+            else getUrl = '/api/post/list/';
+
             axios
-                .get('/api/post/list/')
+                .get(getUrl)
                 .then((res) => {
-                    console.log('Post get res', res);
+                    console.log('Post list get res', res);
                     this.posts = res.data;
                 })
                 .catch((err) => {
