@@ -1,11 +1,10 @@
 const { defineConfig } = require('@vue/cli-service');
-const path = require('path');
+const FileManagerPlugin = require('filemanager-webpack-plugin');
 
 module.exports = defineConfig({
     transpileDependencies: ['vuetify'],
     devServer: {
         static: {
-            directory: path.join(__dirname, 'dist'),
             staticOptions: {
                 index: 'home.html',
             },
@@ -36,5 +35,35 @@ module.exports = defineConfig({
             title: 'VueDjangoPhoto/post_detail.html',
             minify: false,
         },
+    },
+
+    configureWebpack: {
+        plugins: [
+            new FileManagerPlugin({
+                events: {
+                    onStart: {
+                        delete: [
+                            {
+                                source: '../static/*',
+                                options: { force: true },
+                            },
+                            {
+                                source: '../templates/*',
+                                options: { force: true },
+                            },
+                        ],
+                    },
+
+                    onEnd: {
+                        copy: [
+                            { source: './dist/static', destination: '../static/' },
+                            { source: './dist/favicon.ico', destination: '../static/img/' },
+                            { source: './dist/home.html', destination: '../templates/' },
+                            { source: './dist/post*.html', destination: '../templates/blog/' },
+                        ],
+                    },
+                },
+            }),
+        ],
     },
 });
