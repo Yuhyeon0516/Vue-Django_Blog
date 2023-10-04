@@ -33,13 +33,9 @@
 
                 <v-card class="pa-2" tile>
                     <h2>Tag cloud</h2>
-                    <v-chip class="ma-2" color="green" text-color="white">
+                    <v-chip v-for="(tag, index) in tagCloud" :key="index" class="ma-2" color="green" text-color="white">
                         <v-avatar left class="green darken-4">1</v-avatar>
-                        Python
-                    </v-chip>
-                    <v-chip class="ma-2" color="green" text-color="white">
-                        <v-avatar left class="green darken-4">3</v-avatar>
-                        Django
+                        {{ tag.name }}
                     </v-chip>
                 </v-card>
             </v-col>
@@ -53,11 +49,13 @@ import axios from 'axios';
 export default {
     data: () => ({
         post: {},
+        tagCloud: [],
     }),
     created() {
         console.log('created');
         const postId = 2;
         this.fetchPostDetail(postId);
+        this.fetchTagCloud();
     },
     methods: {
         fetchPostDetail(postId) {
@@ -67,6 +65,20 @@ export default {
                 .then((res) => {
                     console.log('Post detail get res', res);
                     this.post = res.data;
+                })
+                .catch((err) => {
+                    console.log('error', err.response);
+                    alert(err.response.status + ' ' + err.response.statusText);
+                });
+        },
+
+        fetchTagCloud() {
+            console.log('fetchTagCloud');
+            axios
+                .get()
+                .then((res) => {
+                    console.log('Post tagcloud res', res);
+                    this.tagCloud = res.data;
                 })
                 .catch((err) => {
                     console.log('error', err.response);
