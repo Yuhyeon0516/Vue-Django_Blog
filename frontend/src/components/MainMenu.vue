@@ -241,7 +241,23 @@ export default {
                 });
         },
 
-        passwordChange() {},
+        passwordChange() {
+            console.log('password change');
+
+            const passwordChangeForm = document.getElementById('passwordChange-form');
+            const postData = new FormData(passwordChangeForm);
+
+            axios
+                .post('/api/pwdchg/', postData)
+                .then((res) => {
+                    console.log('password change post res:', res);
+                    alert(`User ${this.me.username} password change OK`);
+                })
+                .catch((err) => {
+                    console.log('password change err:', err);
+                    alert(err.message);
+                });
+        },
     },
 };
 </script>
