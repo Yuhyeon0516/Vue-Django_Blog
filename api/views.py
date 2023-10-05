@@ -1,5 +1,5 @@
-from django.contrib.auth import login, logout
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth import login, logout, update_session_auth_hash
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
@@ -92,3 +92,15 @@ class ApiLogoutView(LogoutView):
     def dispatch(self, request, *args, **kwargs):
         logout(request)
         return JsonResponse(data={}, safe=True, status=200)
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class ApipwdChgView(PasswordChangeView):
+    def form_valid(self, form):
+        form.save()
+        update_session_auth_hash(self.request, form.user)
+
+        return JsonResponse(data={}, safe=True, status=200)
+
+    def form_invalid(self, form):
+        return JsonResponse(data=form.errors, safe=True, status=400)
