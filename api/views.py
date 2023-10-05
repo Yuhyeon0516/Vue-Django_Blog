@@ -1,13 +1,14 @@
 from django.contrib.auth import login
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.db.models import Count
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.detail import BaseDetailView
+from django.views.generic.edit import BaseCreateView
 from django.views.generic.list import BaseListView
 from taggit.models import Tag
+from accounts.forms import MyUserCreationForm
 from api.views_util import make_tag_cloud, obj_to_post, prev_next_post
 
 from blog.models import Post
@@ -63,6 +64,22 @@ class ApiLoginView(LoginView):
             "username": user.username,
         }
 
+        return JsonResponse(data=userDict, safe=True, status=200)
+
+    def form_invalid(self, form):
+        return JsonResponse(data=form.errors, safe=True, status=400)
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class ApiRegisterView(BaseCreateView):
+    form_class = MyUserCreationForm
+
+    def form_valid(self, form):
+        self.object = form.save()
+        userDict = {
+            "id": self.object.id,
+            "username": self.object.username,
+        }
         return JsonResponse(data=userDict, safe=True, status=200)
 
     def form_invalid(self, form):
