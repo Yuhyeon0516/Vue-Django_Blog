@@ -145,9 +145,16 @@ export default {
     methods: {
         cancel(kind) {
             console.log('cancel..', kind);
-            if (kind === 'login') this.dialog.login = false;
-            else if (kind === 'register') this.dialog.register = false;
-            else if (kind === 'passwordChange') this.dialog.passwordChange = false;
+            if (kind === 'login') {
+                this.dialog.login = false;
+                this.$refs.loginForm.reset();
+            } else if (kind === 'register') {
+                this.dialog.register = false;
+                this.$refs.registerForm.reset();
+            } else if (kind === 'passwordChange') {
+                this.dialog.passwordChange = false;
+                this.$refs.passwordChangeForm.reset();
+            }
         },
 
         save(kind) {
@@ -156,12 +163,15 @@ export default {
             if (kind === 'login') {
                 this.login();
                 this.dialog.login = false;
+                this.$refs.loginForm.reset();
             } else if (kind === 'register') {
                 this.register();
                 this.dialog.register = false;
+                this.$refs.registerForm.reset();
             } else if (kind === 'passwordChange') {
                 this.passwordChange();
                 this.dialog.passwordChange = false;
+                this.$refs.passwordChangeForm.reset();
             }
         },
 
