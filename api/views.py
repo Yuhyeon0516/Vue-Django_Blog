@@ -11,6 +11,7 @@ from django.views.generic.edit import BaseCreateView, BaseUpdateView
 from django.views.generic.list import BaseListView
 from taggit.models import Tag
 from accounts.forms import MyUserCreationForm
+from accounts.views import MyLoginRequiredMixin, OwnerOnlyMixin
 from api.views_util import make_tag_cloud, obj_to_post, prev_next_post
 
 from blog.models import Post
@@ -125,7 +126,7 @@ class ApiMeView(View):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class ApiPostCV(BaseCreateView):
+class ApiPostCV(MyLoginRequiredMixin, BaseCreateView):
     model = Post
     fields = "__all__"
 
@@ -140,7 +141,7 @@ class ApiPostCV(BaseCreateView):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class ApiPostUV(BaseUpdateView):
+class ApiPostUV(OwnerOnlyMixin, BaseUpdateView):
     model = Post
     fields = "__all__"
 
@@ -154,7 +155,7 @@ class ApiPostUV(BaseUpdateView):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class ApiPostDelV(BaseDetailView):
+class ApiPostDelV(OwnerOnlyMixin, BaseDetailView):
     model = Post
 
     def delete(self, request, *args, **kwargs):
