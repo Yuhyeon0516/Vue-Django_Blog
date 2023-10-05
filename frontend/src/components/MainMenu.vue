@@ -40,24 +40,29 @@
             <v-menu offset-y left bottom>
                 <template v-slot:activator="{ on, attrs }">
                     <v-btn text v-bind="attrs" v-on="on">
-                        <v-icon class="mr-2">mdi-account</v-icon>Anonymous
+                        <v-icon class="mr-2">mdi-account</v-icon>{{ me.username }}
                         <v-icon class="ml-1">mdi-dots-vertical</v-icon>
                     </v-btn>
                 </template>
 
                 <v-list>
-                    <v-list-item @click="dialog.login = true">
-                        <v-list-item-title>Login</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item @click="dialog.register = true">
-                        <v-list-item-title>Register</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item>
-                        <v-list-item-title>Logout</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item @click="dialog.passwordChange = true">
-                        <v-list-item-title>Password Change</v-list-item-title>
-                    </v-list-item>
+                    <template v-if="me.username === 'Anonymous'">
+                        <v-list-item @click="dialogOpen('login')">
+                            <v-list-item-title>Login</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="dialogOpen('register')">
+                            <v-list-item-title>Register</v-list-item-title>
+                        </v-list-item>
+                    </template>
+
+                    <template v-else>
+                        <v-list-item>
+                            <v-list-item-title>Logout</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="dialogOpen('passwordChange')">
+                            <v-list-item-title>Password Change</v-list-item-title>
+                        </v-list-item>
+                    </template>
                 </v-list>
             </v-menu>
         </v-app-bar>
@@ -140,9 +145,20 @@ export default {
             register: false,
             passwordChange: false,
         },
-        me: {},
+        me: { username: 'Anonymous' },
     }),
     methods: {
+        dialogOpen(kind) {
+            console.log('dialogOpen..', kind);
+            if (kind === 'login') {
+                this.dialog.login = true;
+            } else if (kind === 'register') {
+                this.dialog.register = true;
+            } else if (kind === 'passwordChange') {
+                this.dialog.passwordChange = true;
+            }
+        },
+
         cancel(kind) {
             console.log('cancel..', kind);
             if (kind === 'login') {
