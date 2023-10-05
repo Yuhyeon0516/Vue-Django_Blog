@@ -133,6 +133,7 @@
 
 <script>
 import axios from 'axios';
+import EventBus from './event_bus';
 
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -145,8 +146,15 @@ export default {
             register: false,
             passwordChange: false,
         },
-        me: { username: '' },
+        me: { username: 'Anonymous' },
     }),
+
+    watch: {
+        me(newVal) {
+            console.log('watch me..', newVal);
+            EventBus.$emit('me_change', newVal);
+        },
+    },
 
     created() {
         this.getUserInfo();
