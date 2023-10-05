@@ -1,8 +1,9 @@
-from django.contrib.auth import login, logout, update_session_auth_hash
+from django.contrib.auth import get_user, login, logout, update_session_auth_hash
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.detail import BaseDetailView
@@ -104,3 +105,20 @@ class ApipwdChgView(PasswordChangeView):
 
     def form_invalid(self, form):
         return JsonResponse(data=form.errors, safe=True, status=400)
+
+
+class ApiMeView(View):
+    def get(self, request, *args, **kwargs):
+        user = get_user(request)
+
+        if user.is_authenticated:
+            userDict = {
+                "id": user.id,
+                "username": user.username,
+            }
+        else:
+            userDict = {
+                "username": "Anonymous",
+            }
+
+        return JsonResponse(data=userDict, safe=True, status=200)
