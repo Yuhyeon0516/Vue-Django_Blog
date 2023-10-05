@@ -155,6 +155,22 @@ export default {
                     alert(err.message);
                 });
         },
+
+        updatePost() {
+            console.log('update post..');
+            const postForm = document.getElementById('post-form');
+            const postData = new FormData(postForm);
+            axios
+                .post(`/api/post/${this.editedItem.id}/update`, postData)
+                .then((res) => {
+                    console.log('post update res:', res);
+                    this.posts.splice(this.editedIndex, 1, res.data);
+                })
+                .catch((err) => {
+                    console.log('post update err:', err);
+                    alert(err.message);
+                });
+        },
     },
 };
 </script>
