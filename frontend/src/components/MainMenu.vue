@@ -145,8 +145,13 @@ export default {
             register: false,
             passwordChange: false,
         },
-        me: { username: 'Anonymous' },
+        me: { username: '' },
     }),
+
+    created() {
+        this.getUserInfo();
+    },
+
     methods: {
         dialogOpen(kind) {
             console.log('dialogOpen..', kind);
@@ -256,6 +261,18 @@ export default {
                 .catch((err) => {
                     console.log('password change err:', err);
                     alert(err.message);
+                });
+        },
+
+        getUserInfo() {
+            console.log('getUserInfo');
+            axios
+                .get('/api/me/')
+                .then((res) => {
+                    this.me = res.data;
+                })
+                .catch((err) => {
+                    console.log('get user info err:', err);
                 });
         },
     },
