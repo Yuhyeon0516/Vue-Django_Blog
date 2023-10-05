@@ -56,7 +56,7 @@
                     </template>
 
                     <template v-else>
-                        <v-list-item>
+                        <v-list-item @click="logout">
                             <v-list-item-title>Logout</v-list-item-title>
                         </v-list-item>
                         <v-list-item @click="dialogOpen('passwordChange')">
@@ -221,6 +221,22 @@ export default {
                 })
                 .catch((err) => {
                     console.log('register post err:', err);
+                    alert(err.message);
+                });
+        },
+
+        logout() {
+            console.log('logout');
+
+            axios
+                .get('/api/logout/')
+                .then((res) => {
+                    console.log('logout get res:', res);
+                    alert(`User ${this.me.username} logout OK`);
+                    this.me = { username: 'Anonymous' };
+                })
+                .catch((err) => {
+                    console.log('logout get err:', err);
                     alert(err.message);
                 });
         },

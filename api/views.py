@@ -1,8 +1,9 @@
-from django.contrib.auth import login
-from django.contrib.auth.views import LoginView
+from django.contrib.auth import login, logout
+from django.contrib.auth.views import LoginView, LogoutView
 from django.db.models import Count
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.edit import BaseCreateView
@@ -80,7 +81,14 @@ class ApiRegisterView(BaseCreateView):
             "id": self.object.id,
             "username": self.object.username,
         }
-        return JsonResponse(data=userDict, safe=True, status=200)
+        return JsonResponse(data=userDict, safe=True, status=201)
 
     def form_invalid(self, form):
         return JsonResponse(data=form.errors, safe=True, status=400)
+
+
+class ApiLogoutView(LogoutView):
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        logout(request)
+        return JsonResponse(data={}, safe=True, status=200)
