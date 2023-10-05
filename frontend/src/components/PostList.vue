@@ -50,6 +50,7 @@
 
 <script>
 import axios from 'axios';
+import EventBus from './event_bus';
 
 export default {
     data: () => ({
@@ -74,17 +75,24 @@ export default {
         actionKind: '',
         me: { username: 'Anonymous' },
     }),
+
     created() {
         const params = new URL(location).searchParams;
         this.tagname = params.get('tagname');
         this.fetchPostList(this.tagname);
+
+        EventBus.$on('me_change', (val) => {
+            this.me = val;
+        });
     },
+
     computed: {
         formTitle() {
             if (this.actionKind === 'create') return 'Create Post';
             else return 'Update Post';
         },
     },
+
     methods: {
         fetchPostList() {
             console.log('fetchPostList', this.tagname);
@@ -160,6 +168,7 @@ export default {
             console.log('update post..');
             const postForm = document.getElementById('post-form');
             const postData = new FormData(postForm);
+            postData.set('owner', this.me.id);
             axios
                 .post(`/api/post/${this.editedItem.id}/update/`, postData)
                 .then((res) => {

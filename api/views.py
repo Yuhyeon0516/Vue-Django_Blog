@@ -7,7 +7,7 @@ from django.views import View
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.detail import BaseDetailView
-from django.views.generic.edit import BaseCreateView
+from django.views.generic.edit import BaseCreateView, BaseUpdateView
 from django.views.generic.list import BaseListView
 from taggit.models import Tag
 from accounts.forms import MyUserCreationForm
@@ -122,3 +122,43 @@ class ApiMeView(View):
             }
 
         return JsonResponse(data=userDict, safe=True, status=200)
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class ApiPostCV(BaseCreateView):
+    model = Post
+    fields = "__all__"
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        self.object = form.save()
+        post = obj_to_post(self.object)
+        return JsonResponse(data=post, safe=True, status=201)
+
+    def form_invalid(self, form):
+        return JsonResponse(data=form.errors, safe=True, status=400)
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class ApiPostUV(BaseUpdateView):
+    model = Post
+    fields = "__all__"
+
+    def form_valid(self, form):
+        self.object = form.save()
+        post = obj_to_post(self.object)
+        return JsonResponse(data=post, safe=True, status=200)
+
+    def form_invalid(self, form):
+        return JsonResponse(data=form.errors, safe=True, status=400)
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class ApiPostDelV(BaseDetailView):
+    model = Post
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+
+        return JsonResponse(data={}, safe=True, status=204)
