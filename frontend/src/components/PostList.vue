@@ -161,13 +161,31 @@ export default {
             const postForm = document.getElementById('post-form');
             const postData = new FormData(postForm);
             axios
-                .post(`/api/post/${this.editedItem.id}/update`, postData)
+                .post(`/api/post/${this.editedItem.id}/update/`, postData)
                 .then((res) => {
                     console.log('post update res:', res);
                     this.posts.splice(this.editedIndex, 1, res.data);
                 })
                 .catch((err) => {
                     console.log('post update err:', err);
+                    alert(err.message);
+                });
+        },
+
+        deletePost(item) {
+            console.log('delete post..', item);
+
+            if (!confirm('Are you sure to delete ?')) return;
+
+            axios
+                .delete(`/api/post/${item.id}/delete/`)
+                .then((res) => {
+                    console.log('delete post res:', res);
+                    const index = this.posts.indexOf(item);
+                    this.posts.splice(index, 1);
+                })
+                .catch((err) => {
+                    console.log('delete post err:', err);
                     alert(err.message);
                 });
         },
