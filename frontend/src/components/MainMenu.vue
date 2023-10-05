@@ -208,7 +208,22 @@ export default {
                 });
         },
 
-        register() {},
+        register() {
+            console.log('register');
+            const registerForm = document.getElementById('register-form');
+            const postData = new FormData(registerForm);
+
+            axios
+                .post('/api/register/', postData)
+                .then((res) => {
+                    console.log('register post res:', res);
+                    alert(`User ${res.data.username} created OK`);
+                })
+                .catch((err) => {
+                    console.log('register post err:', err);
+                    alert(err.message);
+                });
+        },
 
         passwordChange() {},
     },
