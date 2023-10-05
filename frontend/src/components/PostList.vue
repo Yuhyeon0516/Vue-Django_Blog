@@ -81,8 +81,8 @@ export default {
     },
     computed: {
         formTitle() {
-            if (this.actionKind === 'create') return 'Create Item';
-            else return 'Update Item';
+            if (this.actionKind === 'create') return 'Create Post';
+            else return 'Update Post';
         },
     },
     methods: {
@@ -96,7 +96,7 @@ export default {
             axios
                 .get(getUrl)
                 .then((res) => {
-                    console.log('Post list get res', res);
+                    console.log('Post list get res..', res);
                     this.posts = res.data;
                 })
                 .catch((err) => {
@@ -106,19 +106,19 @@ export default {
         },
 
         serverPage(item) {
-            console.log('serverPage', item);
+            console.log('serverPage..', item);
             location.href = `/blog/post/${item.id}/`;
         },
 
-        dialogOpen(actionKind, item) {
-            console.log('dialogOpen()...', actionKind, item);
+        dialogOpen(kind, item) {
+            console.log('dialogOpen..', kind, item);
             // if (this.me.username === 'Anonymous') {
             //     alert('Please login first !');
             //     return;
             // }
 
-            this.actionKind = actionKind;
-            if (actionKind === 'create') {
+            this.actionKind = kind;
+            if (kind === 'create') {
                 this.editedIndex = -1;
                 this.editedItem = {};
             } else {
@@ -129,24 +129,66 @@ export default {
         },
 
         cancel() {
-            console.log('cancel()...');
+            console.log('cancel..');
             this.dialog = false;
         },
 
         save() {
-            console.log('save()...');
+            console.log('save..');
             if (this.actionKind === 'create') this.createPost();
             else this.updatePost();
             this.dialog = false;
         },
 
-        deletePost(item) {
-            console.log(item);
+        createPost() {
+            console.log('create post..');
+            const postForm = document.getElementById('post-form');
+            const postData = new FormData(postForm);
+            axios
+                .post('/api/post/create/', postData)
+                .then((res) => {
+                    console.log('post create res:', res);
+                    this.posts.push(res.data);
+                })
+                .catch((err) => {
+                    console.log('post create err:', err);
+                    alert(err.message);
+                });
         },
 
-        createPost() {},
+        updatePost() {
+            console.log('update post..');
+            const postForm = document.getElementById('post-form');
+            const postData = new FormData(postForm);
+            axios
+                .post(`/api/post/${this.editedItem.id}/update/`, postData)
+                .then((res) => {
+                    console.log('post update res:', res);
+                    this.posts.splice(this.editedIndex, 1, res.data);
+                })
+                .catch((err) => {
+                    console.log('post update err:', err);
+                    alert(err.message);
+                });
+        },
 
-        updatePost() {},
+        deletePost(item) {
+            console.log('delete post..', item);
+
+            if (!confirm('Are you sure to delete ?')) return;
+
+            axios
+                .delete(`/api/post/${item.id}/delete/`)
+                .then((res) => {
+                    console.log('delete post res:', res);
+                    const index = this.posts.indexOf(item);
+                    this.posts.splice(index, 1);
+                })
+                .catch((err) => {
+                    console.log('delete post err:', err);
+                    alert(err.message);
+                });
+        },
     },
 };
 </script>
