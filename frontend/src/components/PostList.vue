@@ -120,10 +120,10 @@ export default {
 
         dialogOpen(kind, item) {
             console.log('dialogOpen..', kind, item);
-            // if (this.me.username === 'Anonymous') {
-            //     alert('Please login first !');
-            //     return;
-            // }
+            if (this.me.username === 'Anonymous') {
+                alert('Please login first !');
+                return;
+            }
 
             this.actionKind = kind;
             if (kind === 'create') {
@@ -183,7 +183,10 @@ export default {
 
         deletePost(item) {
             console.log('delete post..', item);
-
+            if (this.me.username === 'Anonymous') {
+                alert('Please login first !');
+                return;
+            }
             if (!confirm('Are you sure to delete ?')) return;
 
             axios
