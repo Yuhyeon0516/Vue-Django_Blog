@@ -151,3 +151,14 @@ class ApiPostUV(BaseUpdateView):
 
     def form_invalid(self, form):
         return JsonResponse(data=form.errors, safe=True, status=400)
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class ApiPostDelV(BaseDetailView):
+    model = Post
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+
+        return JsonResponse(data={}, safe=True, status=204)
