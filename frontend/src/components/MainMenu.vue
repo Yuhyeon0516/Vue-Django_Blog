@@ -76,8 +76,8 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn text color="grey" @click="dialog.login = false">Cancel</v-btn>
-                    <v-btn color="primary" class="mr-5" @click="dialog.login = false">Login</v-btn>
+                    <v-btn text color="grey" @click="cancel('login')">Cancel</v-btn>
+                    <v-btn color="primary" class="mr-5" @click="save('login')">Login</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -97,8 +97,8 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn text color="grey" @click="dialog.register = false">Cancel</v-btn>
-                    <v-btn color="success" class="mr-5" @click="dialog.register = false">Register</v-btn>
+                    <v-btn text color="grey" @click="cancel('register')">Cancel</v-btn>
+                    <v-btn color="success" class="mr-5" @click="save('register')">Register</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -118,8 +118,8 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn text color="grey" @click="dialog.passwordChange = false">Cancel</v-btn>
-                    <v-btn color="warning" class="mr-5" @click="dialog.passwordChange = false">Change</v-btn>
+                    <v-btn text color="grey" @click="cancel('passwordChange')">Cancel</v-btn>
+                    <v-btn color="warning" class="mr-5" @click="save('passwordChange')">Change</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -127,6 +127,11 @@
 </template>
 
 <script>
+import axios from 'axios';
+
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+
 export default {
     data: () => ({
         drawer: null,
@@ -135,7 +140,52 @@ export default {
             register: false,
             passwordChange: false,
         },
+        me: {},
     }),
+    methods: {
+        cancel(kind) {
+            console.log('cancel..', kind);
+            if (kind === 'login') this.dialog.login = false;
+            else if (kind === 'register') this.dialog.register = false;
+            else if (kind === 'passwordChange') this.dialog.passwordChange = false;
+        },
+
+        save(kind) {
+            console.log('save..', kind);
+
+            if (kind === 'login') {
+                this.login();
+                this.dialog.login = false;
+            } else if (kind === 'register') {
+                this.register();
+                this.dialog.register = false;
+            } else if (kind === 'passwordChange') {
+                this.passwordChange();
+                this.dialog.passwordChange = false;
+            }
+        },
+
+        login() {
+            console.log('login..');
+            const loginForm = document.getElementById('login-form');
+            const postData = new FormData(loginForm);
+
+            axios
+                .post('/api/login/', postData)
+                .then((res) => {
+                    console.log('Login post res:', res);
+                    this.me = res.data;
+                })
+                .catch((err) => {
+                    console.log('login post err:', err);
+                    alert(err.message);
+                });
+        },
+
+        register() {},
+
+        passwordChange() {},
+    },
 };
 </script>
 

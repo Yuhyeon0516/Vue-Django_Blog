@@ -1,5 +1,10 @@
+from django.contrib.auth import login
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.views import LoginView
 from django.db.models import Count
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
 from taggit.models import Tag
@@ -46,3 +51,19 @@ class ApiTagCloudLV(BaseListView):
         tagList = make_tag_cloud(qs)
 
         return JsonResponse(data=tagList, safe=False, status=200)
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class ApiLoginView(LoginView):
+    def form_valid(self, form):
+        user = form.get_user()
+        login(self.request, user)
+        userDict = {
+            "id": user.id,
+            "username": user.username,
+        }
+
+        return JsonResponse(data=userDict, safe=True, status=200)
+
+    def form_invalid(self, form):
+        return JsonResponse(data=form.errors, safe=True, status=400)
